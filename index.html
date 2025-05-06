@@ -4,92 +4,175 @@
   <meta charset="UTF-8">
   <title>Kviz o inženjerstvu</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: #f9f9f9;
-      color: #333;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+    /* Basic reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  padding: 20px;
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Ensure the page takes up the full height of the viewport */
+  flex-direction: column;
+  overflow: auto; /* Enable scrolling on the entire page */
+}
 
-    .question {
-      font-weight: bold;
-      font-size: 1.2em;
-      margin-top: 20px;
-    }
+#quiz-container {
+  background-color: #fff;
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center content vertically within the container */
+  align-items: center; /* Center content horizontally within the container */
+  height: auto;
+}
 
-    .options {
-      margin: 15px 0;
-    }
+h1 {
+  color: #2c3e50;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
 
-    .options label {
-      display: block;
-      margin-bottom: 10px;
-      background-color: #fff;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
+#question-number {
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  color: #555;
+}
 
-    .options label:hover {
-      background-color: #f0f0f0;
-    }
+.question {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-top: 20px;
+  color: #2c3e50;
+  word-wrap: break-word;
+}
 
-    input[type="radio"] {
-      margin-right: 10px;
-    }
+.options {
+  margin: 15px 0;
+  padding: 10px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px; /* Space between each option */
+  height: auto; /* Let height adjust automatically based on the content */
+}
 
-    button {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1em;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background-color 0.3s ease;
-    }
+.options label {
+  display: block;
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1em;
+}
 
-    button:hover {
-      background-color: #2980b9;
-    }
+.options label:hover {
+  background-color: #f0f0f0;
+}
 
-    #nextBtn {
-      background-color: #2ecc71;
-      margin-left: 10px;
-    }
+/* Button styles */
+button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  font-size: 1em;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+}
 
-    #nextBtn:hover {
-      background-color: #27ae60;
-    }
+button:hover {
+  background-color: #2980b9;
+}
 
-    .feedback {
-      font-weight: bold;
-      margin-top: 15px;
-      font-size: 1.1em;
-    }
+#nextBtn {
+  background-color: #2ecc71;
+  margin-left: 10px;
+}
+
+#nextBtn:hover {
+  background-color: #27ae60;
+}
+
+.feedback {
+  font-weight: bold;
+  margin-top: 15px;
+  font-size: 1.1em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #quiz-container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.2em;
+  }
+
+  .question {
+    font-size: 1em;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 0.9em;
+  }
+
+  #question-number {
+    font-size: 1em;
+  }
+
+  .options {
+    max-height: 250px; /* Adjust height for smaller screens */
+  }
+
+  .options label {
+    font-size: 0.9em; /* Smaller font size for mobile */
+  }
+}
+
+
+    
   </style>
 </head>
 <body>
-
-  <h1>ChatGPT mui kviz</h1>
   <div id="quiz-container">
+    <div id="question-number"></div>
+    <h1>ChatGPT mui kviz</h1>
     <div id="question" class="question"></div>
     <div id="options" class="options"></div>
     <button onclick="submitAnswer()">Potvrdi odgovor</button>
     <div id="feedback" class="feedback"></div>
-    <button id="nextBtn" onclick="nextQuestion()" style="display:none;">Sljedeće pitanje</button>
+    <button id="nextBtn" onclick="nextQuestion()" style="display:none;">Sljedeće pitanje</button><br>
+    <button onclick="goToRandomQuestion()">Nasumično pitanje</button>
+
+    <div style="margin-top: 20px;">
+      <label for="questionSlider">Idi na pitanje:</label>
+      <input type="range" id="questionSlider" min="0" max="1" value="0" oninput="goToQuestion(this.value)">
+    </div>
   </div>
 
   <script>
@@ -1098,6 +1181,10 @@
     let selectedAnswer = null;
 
     function showQuestion() {
+    document.getElementById('question-number').innerText = `Pitanje ${currentQuestion + 1} od ${pitanja.length}`;
+    const slider = document.getElementById('questionSlider');
+    slider.value = currentQuestion
+
       const q = pitanja[currentQuestion];
       document.getElementById('question').innerText = q.pitanje;
       const optionsDiv = document.getElementById('options');
@@ -1141,6 +1228,16 @@
       document.getElementById('nextBtn').style.display = 'inline-block';
     }
 
+    function goToQuestion(index) {
+        currentQuestion = parseInt(index);
+        showQuestion();
+
+    }
+    function goToRandomQuestion() {
+  const randomIndex = Math.floor(Math.random() * pitanja.length);
+  goToQuestion(randomIndex);
+}
+
     function nextQuestion() {
       currentQuestion++;
       if (currentQuestion < pitanja.length) {
@@ -1149,7 +1246,8 @@
         document.getElementById('quiz-container').innerHTML = '<h2>Završili ste kviz!</h2>';
       }
     }
-
+    document.getElementById('questionSlider').value = currentQuestion;
+    document.getElementById('questionSlider').max = pitanja.length - 1;
     showQuestion();
   </script>
 

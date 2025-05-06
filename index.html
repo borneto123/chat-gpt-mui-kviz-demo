@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <title>Kviz o inženjerstvu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      color: #333;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    .question {
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+
+    .options {
+      margin: 15px 0;
+    }
+
+    .options label {
+      display: block;
+      margin-bottom: 10px;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .options label:hover {
+      background-color: #f0f0f0;
+    }
+
+    input[type="radio"] {
+      margin-right: 10px;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    #nextBtn {
+      background-color: #2ecc71;
+      margin-left: 10px;
+    }
+
+    #nextBtn:hover {
+      background-color: #27ae60;
+    }
+
+    .feedback {
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 1.1em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>ChatGPT mui kviz</h1>
+  <div id="quiz-container">
+    <div id="question" class="question"></div>
+    <div id="options" class="options"></div>
+    <button onclick="submitAnswer()">Potvrdi odgovor</button>
+    <div id="feedback" class="feedback"></div>
+    <button id="nextBtn" onclick="nextQuestion()" style="display:none;">Sljedeće pitanje</button>
+  </div>
+
+  <script>
+    const pitanja = [
+  {
+    "pitanje": "Inženjerstvo je:",
+    "odgovori": {
+      "1": "Profesija u kojoj se znanje matematike i prirodnih znanosti s pažnjom primjenjuje za ekonomično korištenje materijala i prirodnih sila za dobrobit čovječanstva.",
+      "2": "Profesija u kojoj se znanje matematike i prirodnih znanosti primjenjuje za ekonomično korištenje materijala i prirodnih sila.",
+      "3": "Profesija u kojoj se znanje matematike i prirodnih znanosti primjenjuje za korištenje materijala i prirodnih sila.",
+      "4": "Profesija u kojoj se znanje matematike i prirodnih znanosti primjenjuje za korištenje materijala i prirodnih sila za dobrobit čovječanstva.",
+      "5": "Profesija u kojoj se znanje matematike i prirodnih znanosti s pažnjom primjenjuje za korištenje materijala i prirodnih sila za dobrobit čovječanstva."
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Korijen riječi inženjer potječe iz:",
+    "odgovori": {
+      "1": "Stare Grčke",
+      "2": "Starog Egipta",
+      "3": "Starog Rima",
+      "4": "Kine",
+      "5": "Mezopotamije"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Prvi zakon o profesionalnoj odgovornosti inženjerstva potječe iz:",
+    "odgovori": {
+      "1": "Stare Grčke",
+      "2": "Starog Egipta",
+      "3": "Starog Rima",
+      "4": "Kine",
+      "5": "Mezopotamije"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Prvo digitalno računalo konstruirano je u:",
+    "odgovori": {
+      "1": "16. stoljeću",
+      "2": "17. stoljeću",
+      "3": "18. stoljeću",
+      "4": "19. stoljeću",
+      "5": "20. stoljeću"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Obrazovanje inženjera:",
+    "odgovori": {
+      "1": "traje tijekom cijelog profesionalnog života",
+      "2": "završava preddiplomskim studijem",
+      "3": "završava magistarskim studijem",
+      "4": "završava doktorskim studijem",
+      "5": "završava specijalističkim studijem"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Inženjerski pristup rješavanju problema je:",
+    "odgovori": {
+      "1": "Analiza i rješavanje problema primjenom ad-hoc metoda",
+      "2": "Sustavni pristup definiciji i analizi problema",
+      "3": "Primjena tehničkih znanosti za pronalaženje rezultata",
+      "4": "Rješavanje problema korištenje različitih vještina",
+      "5": "Dobro prepoznavanja problema u svojoj okolini"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Prostor problema označava:",
+    "odgovori": {
+      "1": "Stanje problema nakon poduzete akcije",
+      "2": "Preporučene akcije koje treba poduzeti nad problemom",
+      "3": "Ograničenja pri rješavanju problema",
+      "4": "Skup mogućih putanja rješavanja problema",
+      "5": "Način redefiniranja problema"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Ciklus rješavanja problema je iterativan, što znači:",
+    "odgovori": {
+      "1": "Lakše se dolazi do rješenja problema",
+      "2": "Problem se rješavanja opetovanim prolaženjem kroz faze ciklusa",
+      "3": "Tijekom rješavanja uključuju se različiti sudionici",
+      "4": "Problem se rješava od prve",
+      "5": "Rješenje se isporučuje inkrementalno"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Slabo definirani problemi označavaju probleme za koje vrijedi:",
+    "odgovori": {
+      "1": "Teško se dolazi do rješenja",
+      "2": "Postoji neizvjesnost u opisu informacija, akcija ili cilja",
+      "3": "Postoji neizvjesnost u postojanju rješenja",
+      "4": "Probleme je teško opisati",
+      "5": "Opis problema je sažet"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Dobra formulacija problema sadrži:",
+    "odgovori": {
+      "1": "Opis problema, opsega i okoline",
+      "2": "Opis problema, organizacije i sudionika na njegovom rješavanju",
+      "3": "Opis problema i strukturu rješenja",
+      "4": "Opis problema i informacija potrebnih za njegovo rješenje",
+      "5": "Opis problema i posljedice nerješavanja problema"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Specifikacije pri rješavanju problema označavaju:",
+    "odgovori": {
+      "1": "Potencijalna rješenja",
+      "2": "Glavno rješenje i optimalna rješenja",
+      "3": "Ograničenja budućeg rješenja",
+      "4": "Redove u matrici rješavanja problema",
+      "5": "Akcije i informacije potrebne za rješavanje problema"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Matrica rješavanja problema prikazuje ovisnost između:",
+    "odgovori": {
+      "1": "Glavnog i potencijalnih rješenja",
+      "2": "Potencijalnih rješenja i specifikacija",
+      "3": "Zahtjeva koje sustav mora zadovoljiti",
+      "4": "Zahtjeva koje rješenje ne smije zadovoljiti i specifikacija",
+      "5": "Prioriteta i potencijalnih rješenja"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Inženjerska etika je:",
+    "odgovori": {
+      "1": "skup pravila ponašanja koje svi inženjeri moraju poštovati",
+      "2": "model za komunikaciju između inženjera",
+      "3": "skup pravila pristojnog ponašanja",
+      "4": "model za interakciju unutar inženjerskog tima",
+      "5": "skup pravila za ponašanje inženjera unutar obitelji"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Inženjerski kodeks:",
+    "odgovori": {
+      "1": "pomaže u inženjerskom odlučivanju",
+      "2": "daje odgovore na sve dileme pri inženjerskom odlučivanju",
+      "3": "precizno propisuje ponašanje inženjera u svim situacijama",
+      "4": "ostavlja inženjeru apsolutnu slobodu pri odlučivanju",
+      "5": "omogućava neodgovorno ponašanje inženjera"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Profesionalni inženjer:",
+    "odgovori": {
+      "1": "štiti javnu sigurnost, zdravlje i boljitak",
+      "2": "štiti osobnu sigurnost, zdravlje i boljitak",
+      "3": "štiti sigurnost, zdravlje i boljitak u svom poduzeću",
+      "4": "štiti sigurnost, zdravlje i boljitak u svojoj obitelji",
+      "5": "štiti sigurnost, zdravlje i boljitak u svojih poslodavaca"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Profesionalni inženjer:",
+    "odgovori": {
+      "1": "osigurava pošten posao zaposlenicima",
+      "2": "ne vodi brigu o zaposlenicima",
+      "3": "vodi brigu samo o sebi",
+      "4": "vodi brigu samo o svojim poslodavcima",
+      "5": "vodi brigu samo o svojoj obitelji"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Profesionalni inženjer:",
+    "odgovori": {
+      "1": "informira javnost o štetnim, opasnim i ilegalnim postupcima",
+      "2": "informira samo poslodavca o štetnim, opasnim i ilegalnim postupcima",
+      "3": "informira samo svoje kolege o štetnim, opasnim i ilegalnim postupcima",
+      "4": "informira samo svoju obitelj o štetnim, opasnim i ilegalnim postupcima",
+      "5": "ne informira nikoga o štetnim, opasnim i ilegalnim postupcima"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "U skladu sa Zakonom trgovačka društva u Hrvatskoj su:",
+    "odgovori": {
+      "1": "Dioničko društvo (d.d.), društvo s ograničenom odgovornošću (d.o.o) komanditno društvo i javno trgovačko društvo",
+      "2": "Obrt, javno i državno poduzeće",
+      "3": "Društvo s punom odgovornošću (d.p.o) i društvo s ograničenom odgovornošću (d.o.o)",
+      "4": "Proizvodno, uslužno i obrazovno poduzeće",
+      "5": "Poduzeće, tvrtka i organizacija"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Vlasnici u dioničkom društvu (d.d.) su:",
+    "odgovori": {
+      "1": "samo članovi nadzornog i upravnog odbora, te menadžeri",
+      "2": "svi djelatnici koji su u stalnom radnom odnosu",
+      "3": "jedan ili više članova (dioničari) koji sudjeluju u temeljnome kapitalu podijeljenom na dionice",
+      "4": "državne institucije, odnosno, Ministarstvo gospodarstva ili Ministarstvo financija, zavisno od djelatnosti poduzeća",
+      "5": "dioničko društvo nema definiran oblik vlasništva"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Upravljačku strukturu poduzeća čine:",
+    "odgovori": {
+      "1": "glavni direktor i njegovi pomoćnici (menadžment), a od nadzornog odbora se očekuje da neposredno nadzire rad djelatnika",
+      "2": "svi djelatnici ravnopravno sudjeluju u upravljanju firmom, a sindikalna podružnica nadzire regularnost mehanizma upravljanja",
+      "3": "uprava upravlja poduzećem, a funkcija nadzornog odbora je isključivo nadzirati sukladnost poslovanja sa zakonom",
+      "4": "uprava koja postavlja menadžere, dok rad uprave nadzire nadzorni odbor",
+      "5": "firmom upravlja menadžment, dok uprava i nadzorni odbor imaju isključivo savjetodavnu funkciju i ne sudjeluju u procesu odlučivanja"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Pri obavljanju nekog posla zadatak menadžera je osigurati uvjete da se:",
+    "odgovori": {
+      "1": "posao izvrši u što kraćem roku, bez obzira na kvalitetu obavljenog posla",
+      "2": "utroši vremena koliko god je potrebno dok se ne napravi proizvod vrhunske kvalitete",
+      "3": "uključi što više ljudi u realizaciju posla kako bi svatko mogao doprinijeti kvaliteti posla",
+      "4": "uravnoteži postizanje organizacijskih ciljeva uz racionalno korištenje potrebnih resursa (vremena, ljudstva, materijala)",
+      "5": "menadžerska je dužnost samo delegirati zadatak kompetentnoj osobi čime menadžer ujedno prebacuje sa sebe odgovornost za tijek i realizaciju posla"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Kako bi odgovorili zahtjevima gospodarenja u aktualnim tržišnim uvjetima i ostvarili konkurentsku prednost svog poduzeća od modernih menadžera se očekuje:",
+    "odgovori": {
+      "1": "oblikovanje vizija",
+      "2": "prihvaćanje i stvaranje izazova, te preuzimanje rizika",
+      "3": "inoviranje tržišta, proizvoda, procesa, struktura",
+      "4": "pokretanje i oblikovanje promjena",
+      "5": "sve gore navedeno"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Tvrtka je:",
+    "odgovori": {
+      "1": "jedan od pojavnih oblika trgovačkog društva prema zakonu RH",
+      "2": "privatno poduzeće",
+      "3": "ime pod kojim trgovačko društvo posluje i pod kojim sudjeluje u pravnom prometu",
+      "4": "poduzeće koje se bavi isključivo uslužnom djelatnošću",
+      "5": "sinonim za poduzeće"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Menadžer je:",
+    "odgovori": {
+      "1": "djelatnik koji je završio menadžersku školu",
+      "2": "djelatnik zadužen za funkcioniranje organizacije ili njezinog dijela",
+      "3": "djelatnik s najdužim stažem",
+      "4": "djelatnik s najvećim obrazovanjem",
+      "5": "djelatnik s najvećim tehničkim znanjem"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Oblik organiziranja više poduzeća koja djeluju kao jedinstvena organizacija zove se:",
+    "odgovori": {
+      "1": "matrična organizacija",
+      "2": "teritorijalna organizacija",
+      "3": "virtualna organizacija",
+      "4": "projektna organizacija",
+      "5": "funkcijska organizacija"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Organizacija po funkcijama je tipična za:",
+    "odgovori": {
+      "1": "velika poduzeća samo s jednim proizvodom",
+      "2": "poduzeća s puno proizvoda",
+      "3": "poduzeća s puno projekata",
+      "4": "poduzeća s puno djelatnika",
+      "5": "poduzeća koja se bave razvojno-istraživačkim djelatnostima"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Matrična organizacijska struktura je izraz koji se koristi za:",
+    "odgovori": {
+      "1": "poduzeće u kojem je definiran generalni sustav rada i upravljanja (original=matrica) za projekte, a svaki novi projekt zapravo predstavlja kopiju koja djeluje sukladno zadanoj matrici",
+      "2": "poduzeće visoke tehnologije (hi-tech) koje primjenjuju matrične metode analize konstrukcija",
+      "3": "poduzeće koje ima moderno dizajnirano radno okružje, gdje su svi radnici smješteni u jednoj prostoriji odijeljeni poluvisokim panelima, što podsjeća na matricu",
+      "4": "poduzeće koje koristi matrične sustave u procesu planiranja upravljanja ljudskim potencijalima",
+      "5": "poduzeće kod kojeg je poslovanje organizirano kao kombinacija dviju dimenzija npr. po funkcijama i po projektima"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Projekt je:",
+    "odgovori": {
+      "1": "skup međusobno povezanih aktivnosti s definiranim vremenom početka i završetka usmjerenih prema zajedničkom cilju.",
+      "2": "aktivnosti koje izvršavaju resursi kako bi se ostvarili određeni rezultati",
+      "3": "inženjerski način rješavanja kompleksnih zadataka",
+      "4": "skup međusobno povezanih aktivnosti koje treba ostvariti unutar zadanog budžeta",
+      "5": "proces kreiranja novog proizvoda/usluge primjenom inženjerskih načela u zadanom roku"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Upravljanje projektom je:",
+    "odgovori": {
+      "1": "proces tijekom kojeg se realizira novi proizvod/usluga",
+      "2": "primjena tehnika nadzora projektnog tima kako bi se ostvarili definirani ciljevi",
+      "3": "primjena znanja, vještina, alata i tehnika na projektne aktivnosti s ciljem da se ostvare projektni zahtjevi",
+      "4": "primjena tehnika za uspostavljanje discipline i efikasne komunikacije svih sudionika projekta",
+      "5": "menadžerska vještina koja se može poboljšati sudjelovanjem u velikom broju projekata"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Projektna inicijativa označava:",
+    "odgovori": {
+      "1": "ideje koje se u projektu pretvaraju u novčana sredstva.",
+      "2": "inicijativu pojedinaca koji svojom kreativnošću doprinose uspjehu projekta",
+      "3": "odobrenje projekta od strane vršnog menadžmenta",
+      "4": "pozitivan rezultat inspekcije pojedine faze koji odobrava prelazak u novu fazu",
+      "5": "dokument temeljem kojeg izvršna uprava donosi odluku o pokretanju ili odbacivanju prijedloga projekta"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Dokument u kojem su opisani poslovni aspekti, nadležnosti, rizici i resursi u fazi pripreme projekta naziva se:",
+    "odgovori": {
+      "1": "Projektna inicijativa",
+      "2": "Projektni zadatak",
+      "3": "Projektni plan",
+      "4": "Komunikacijski plan",
+      "5": "Lista rizika"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Planiranje projekta je:",
+    "odgovori": {
+      "1": "određivanje vremenskog rasporeda pojedinih kontrolnih točaka u projektu",
+      "2": "određivanje koliko je ljudi potrebno da bi se isporučio rezultat projekta",
+      "3": "definiranje budžeta u okviru kojeg se treba kretati projekt",
+      "4": "određivanje odgovornosti za izvršavanje pojedinih projektnih aktivnosti",
+      "5": "faza projekta u kojem se određuju resursi i aktivnosti potrebni da se ostvari cilj projekta"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Doseg (eng. Scope) projekta odgovara na pitanje:",
+    "odgovori": {
+      "1": "Zašto se projekt pokreće?",
+      "2": "Tko pokreće projekt?",
+      "3": "Koji je glavni fokus projekta?",
+      "4": "Na koji način je popunjena matrica odgovornosti?",
+      "5": "Koji posao treba obaviti u okviru projekta?"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Interesni sudionici projekta su:",
+    "odgovori": {
+      "1": "top menadžment i naručioci projekta",
+      "2": "sve osobe i organizacije koje utječu na projekt i na koje projekt ima utjecaj",
+      "3": "naručitelji i korisnici projekta",
+      "4": "tim koji sudjeluje na projektu u matričnoj organizaciji",
+      "5": "svi sudionici projekta izvan projektne organizacije"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Kontrolne točke su:",
+    "odgovori": {
+      "1": "granični uvjeti projekta",
+      "2": "vremenski raspored aktivnosti",
+      "3": "odgovornosti sudionika projekta",
+      "4": "točke projekta u kojima se provjerava odvija li se projekt prema planu",
+      "5": "točke u kojima se raspodjeljuju neiskorišteni resursi na nove aktivnosti u projektu"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Veliki projekt se dijeli na manje projekte kako bi se omogućilo:",
+    "odgovori": {
+      "1": "bolje razumijevanje projekta naručiocima i ostalim vanjskim interesnim sudionicima",
+      "2": "uspostavljanje efikasnijih komunikacijskih kanala unutar projektnog tima",
+      "3": "efikasno korištenje zadanog proračuna",
+      "4": "efikasno korištenje zadanog proračuna i ostvarenje definiranih ciljeva",
+      "5": "efikasno upravljanje projektom"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Struktura razlaganja rada na projektu (WBS) je:",
+    "odgovori": {
+      "1": "matrica dodjele odgovornosti na projektu",
+      "2": "struktura projektnih miljokaza",
+      "3": "grupiranje elemenata projekta kojim se slikovito predstavlja hijerarhijski raspored aktivnosti i njihovih rezultata",
+      "4": "grafički prikaz vremenskog slijeda i trajanja pojedinih projektnih aktivnosti",
+      "5": "grafički prikaz vremenskog slijeda i trajanja pojedinih projektnih aktivnosti i odgovornosti pojedinih sudionika projekta"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Struktura razlaganja rada na projektu (WBS) je:",
+    "odgovori": {
+      "1": "matrica dodjele odgovornosti na projektu",
+      "2": "struktura projektnih miljokaza",
+      "3": "grupiranje elemenata projekta kojim se slikovito predstavlja hijerarhijski raspored aktivnosti i njihovih rezultata",
+      "4": "grafički prikaz vremenskog slijeda i trajanja pojedinih projektnih aktivnosti",
+      "5": "grafički prikaz vremenskog slijeda i trajanja pojedinih projektnih aktivnosti i odgovornosti pojedinih sudionika projekta"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Mrežni dijagram je:",
+    "odgovori": {
+      "1": "Grafički prikaz redoslijeda i ovisnosti između projektnih aktivnosti u obliku čvorova i grana",
+      "2": "Grupiranje elemenata projekta kojim se slikovito predstavlja hijerarhijski raspored aktivnosti i njihovih rezultata",
+      "3": "Organizacijski dijagram s prikazanim ulogama pojedinih sudionika",
+      "4": "Dijagram toka informacija i komunikacije u projektu",
+      "5": "Grafički prikaz svih rezultata projekta s naznačenim projektnim kontrolnim točkama"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Kritični put mrežnog dijagrama predstavlja",
+    "odgovori": {
+      "1": "Projektne aktivnosti koje nose najveće rizike za uspjeh projekta",
+      "2": "Projektne aktivnosti koje su ključne za ostvarivanje poslovnog modela",
+      "3": "Projektne aktivnosti koje imaju vremensku rezervu",
+      "4": "Projektne aktivnosti koje definiraju trajanje projekta",
+      "5": "Projektne aktivnosti koje su već izvršene"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Metoda određivanja kritičnog puta CPM koristi se za planiranje u projektima",
+    "odgovori": {
+      "1": "s vrlo izvjesnim rokovima",
+      "2": "s vrlo nesigurnim rokovima",
+      "3": "s vrlo dugačkim rokovima",
+      "4": "s vrlo kratkim rokovima",
+      "5": "sve gore navedeno"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Nakon što je definirano trajanje projekta i plan trajanja projektnih aktivnosti i tijekom odvijanja samog projekta:",
+    "odgovori": {
+      "1": "Ne smiju se mijenjati datumi početka i završetka svih projektnih aktivnosti ako želimo da projekt završi na vrijeme",
+      "2": "Nekim aktivnostima koje nisu na kritičnom putu mogu se mijenjati datumi početka i završetka",
+      "3": "Slobodno se mogu mijenjati datumi početka i završetka svih projektnih aktivnosti ako voditelj procijeni da to neće prouzročiti kašnjenje projekta",
+      "4": "Mogu se mijenjati datumi početka i završetka isključivo aktivnosti sadržanih unutar kritičnog puta",
+      "5": "Sve gore navedeno"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Kako bi iskoristio sinergiju grupe, voditelj projekta mora osigurati:",
+    "odgovori": {
+      "1": "da su svi članovi grupe slični po osobnosti;",
+      "2": "da se grupa sastoji od ljudi sa sličnim radnim iskustvom;",
+      "3": "da grupa sadrži članove komplementarnih vještina i znanja;",
+      "4": "da grupa ima jasan mandat i zadane ciljeve;",
+      "5": "da u grupi vlada čvrsta disciplina"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Što je od navedenoga najvažniji rezultat procesa kontrole projekta?",
+    "odgovori": {
+      "1": "kvalitetne prezentacije rezultata prema visokom menadžmentu kompanije",
+      "2": "informacije koje omogućuju praćenje stanja gotovosti projektnih aktivnosti i prilagodbu projektnog plana s time u skladu",
+      "3": "povećanje mogućnosti kontrole nad ponašanjem članova projektnog tima",
+      "4": "dobivanje novih ideja za izmjene projekta",
+      "5": "određivanje rizika vezanih za pojedine aktivnosti projekta"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Kada je izvjesno da projektni tim neće uspjeti dovršiti projekt na vrijeme, potrebno je:",
+    "odgovori": {
+      "1": "analizirati uzroke kašnjenja, te u skladu s time izmijeniti plan aktivnosti na projektu s ciljem dovršenja uz minimalno kašnjenje",
+      "2": "dovesti nove ljude u projekt i uključiti ih u rad tima",
+      "3": "analizirati je li možda do kašnjenja došlo zbog propusta naručitelja, ili nekoga drugoga, te osigurati da teret krivnje bude proporcionalno razdijeljen",
+      "4": "angažirati tim odvjetnika zbog budućeg očekivanog sukoba s naručiteljem",
+      "5": "mirno nastaviti aktivnosti na projektu do okončanja"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Što od navedenoga NE predstavlja problem, nego prednost, u radu tima koji odrađuje kreativan posao?",
+    "odgovori": {
+      "1": "bezuvjetna suglasnost članova tima oko svih pitanja",
+      "2": "postojanje razumne razine konflikta među članovima tima",
+      "3": "neefikasno rukovođenje, zbog kojega rezultati ovise o inicijativi pojedinaca",
+      "4": "prevelik broj članova tima",
+      "5": "neslaganje članova tima oko većine bitnih pitanja"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Kada se formira projektni tim unutar nekog poduzeća, potrebno je",
+    "odgovori": {
+      "1": "da u timu budu zastupljeni stručnjaci odgovarajućih profila",
+      "2": "da u timu budu angažirani radnici iz svih funkcionalnih jedinica poduzeća, kako bi zastupali njihove interese",
+      "3": "oformiti tim u čim kraćem vremenu",
+      "4": "osigurati da članovi tima imaju čim sličnije karakteristike osobnosti zbog izbjegavanja konflikata",
+      "5": "sve od navedenoga u ostalim točkama"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Kada je riječ o razmjeni informacija između sudionika na projektu:",
+    "odgovori": {
+      "1": "najbolje je prepustiti da informacije kolaju slobodno i ne opterećivati se formom dokumentata – tako je najefikasnije;",
+      "2": "svaki sudionik na projektu najbolje zna kome mora poslati određeni dokument;",
+      "3": "potrebno je sve informacije i dokumente slati izravno voditelju projekta",
+      "4": "dovoljno je da se na kraju snimi izvedeno stanje i izradi odgovarajući dokument",
+      "5": "potrebno je načiniti plan komunikacija"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Pružanje članovima tima povratnih informacija o rezultatima njihova rada:",
+    "odgovori": {
+      "1": "dovodi do kaosa, jer članovi tima razmišljaju o nečemu što nije njihov posao",
+      "2": "povećava motivaciju tima zbog osjećaja o korisnosti vlastitog rada u sklopu ukupnih aktivnosti na projektu",
+      "3": "nije dobro, jer informacije ne smiju kolati bez neposredne kontrole voditelja projekta",
+      "4": "nije dobro, jer, ako su ti rezultati dobri, tim se može opustiti i zbog toga umanjiti kvalitetu svojega rada",
+      "5": "uopće ne utječe na radni proces"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Što je rizik?",
+    "odgovori": {
+      "1": "Rizik je izazov i motivacija za uspješno upravljanje projektom.",
+      "2": "Rizik je uvjet koji naručitelj definira pri pokretanju projekta.",
+      "3": "Rizik je mogući događaj u budućnosti koji ako se dogodi uzrokuje neželjene posljedice.",
+      "4": "Rizik je opravdanje za uvođenje upravljanja projektom.",
+      "5": "Rizik je događaj koji kad se dogodi pokreće sastanak sponzora projekta."
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Što je projektni rizik?",
+    "odgovori": {
+      "1": "Projektni rizik je vjerojatnost da projekt ispadne iz kontrole.",
+      "2": "Projektni rizik je kumulativni efekt slučajnih i neizvjesnih događaja koji mogu uzrokovati nepovoljne efekte za postizanje ciljeva projekta.",
+      "3": "Projektni rizik je vjerojatnost da projekt ne ostvari postavljene ciljeve.",
+      "4": "Projektni rizik je događaj koji je predviđen u planu projekta i služi za provjeru dosegnutih rezultata.",
+      "5": "Projektni rizik je kumulativni efekt planiranih događaja koji mogu uzrokovati pomake u rokovima ostvarenja projekta."
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Što je upravljanje rizicima?",
+    "odgovori": {
+      "1": "Upravljanje rizicima je sistematski pristup za organizaciju upravljanja rizicima, identificiranje, kvantitativno i kvalitativno određivanje i kontrolu rizika.",
+      "2": "Upravljanje rizicima je zadaća svakog člana projektnog tima i sastoji se od prebrojavanja izvršenih zadaća i izračunavanja vjerojatnosti da se oni dovrše u planiranom vremenu.",
+      "3": "Upravljanje rizicima je slijed postupaka kojima se osigurava da predviđeni korisnici sustava ne mogu utjecati na kvalitetu rada na projektu.",
+      "4": "Upravljanje rizicima je stohastički proces i pristup za organizaciju upravljanja rizicima, identificiranje, kvantitativno i kvalitativno određivanje i kontrolu rizika.",
+      "5": "Upravljanje rizicima je programski sustav kojim se prate nepovoljni događaji na projektu."
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Što je na projektu analiza rizika?",
+    "odgovori": {
+      "1": "Analiza rizika je slijed postupaka kojima se dnevno provjerava razina izvršenja postavljenih zadaća.",
+      "2": "Analiza rizika je izvještaj koji voditelj projekta dostavlja nadređenima u sklopu periodičkog izvještavanja o statusu i napretku.",
+      "3": "Analiza rizika je matematski model u koje se simulacijskim metodama određuje vjerojatnost da će projekt završiti prema predviđenom planu.",
+      "4": "Analiza rizika definira procese prepoznavanja, analize i reakcija na projektne rizike.",
+      "5": "Analiza rizika je postupak prepoznavanja i popisivanja projektnih rizika."
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Što je proaktivno upravljanje rizicima?",
+    "odgovori": {
+      "1": "Proaktivno upravljanje rizicima je slijed postupaka koji se poduzimaju kad se dogodi neka nepovoljna situacija na projektu.",
+      "2": "Proaktivno upravljanje rizicima je način upravljanje kad se predviđa i planira kako izbjeći da se dogodi rizik ili ublaže njegove posljedice ako se rizik ipak dogodi.",
+      "3": "Proaktivno upravljanje rizicima je planiranje vremena koje je potrebno za dovršenje planiranih zadataka tako da je vjerojatnost dovršenja veća od 80%.",
+      "4": "Proaktivno upravljanje rizicima je model ankete u kojoj se u ranoj fazi projekta prepoznaje mišljenje korisnika predviđenog proizvoda te time izbjegava da se doživi projektni promašaj.",
+      "5": "Proaktivno upravljanje rizicima je postupak istraživanja uzroka i posljedica te njihov grafički prikaz."
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Što je na projektu identifikacija rizika?",
+    "odgovori": {
+      "1": "Identifikacija rizika je postupak analize projektnih zahtjeva s ciljem da s unaprijed ustanove nelogičnosti i time izbjegne rizik utjecaja na uspješnost projekta.",
+      "2": "Identifikacija rizika je statistička metoda vrednovanja utjecaja rizika na ishod projekta.",
+      "3": "Identifikacija rizika je postupak kojim se poništava nepovoljni utjecaj na ishod projekta.",
+      "4": "Identifikacija rizika je rezultat sastanka vodstva projekta kad se ustanovi da projekt kasni.",
+      "5": "Identifikacija rizika je skup postupaka određivanja rizika i njihovo dokumentiranje."
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Što je Ishikawa dijagram?",
+    "odgovori": {
+      "1": "Ishikawa dijagram je model prikaza vremenskog plana projekta.",
+      "2": "Ishikawa dijagram je prikaz strukture predviđenih rezultata projekta.",
+      "3": "Ishikawa dijagram je način prikaza dinamičke potrebe za resursima.",
+      "4": "Ishikawa dijagram je grafička forma koja se rabi za prepoznavanje i prikaz uzroka i promjena nekog procesa. Naziva se i dijagram uzroka i posljedica (Cause-and-Effect) ili dijagram riblja kost (Fishbone Diagram).",
+      "5": "Ishikawa dijagram je grafička forma koja se rabi za prepoznavanje utjecaja projektne okoline na brzinu realizacije projekta. Naziva se i dijagram uzroka i posljedica (Cause-and-Effect) ili dijagram riblja kost (Fishbone Diagram)."
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Što je stablo odlučivanja (Decision Tree Diagram)?",
+    "odgovori": {
+      "1": "Stablo odlučivanja je prikaza vremenskog plana projekta i utjecaja na vjerojatnost uspješnog ishoda.",
+      "2": "Stablo odlučivanja je prikaz strukture predviđenih rezultata projekta.",
+      "3": "Stablo odlučivanja je grafička forma koja se rabi za prepoznavanje i prikaz uzroka i promjena nekog procesa. Naziva se i dijagram uzroka i posljedica (Cause-and-Effect).",
+      "4": "Stablo odlučivanja je grafički prikaz odnosa između odluka, rizika i njihovih mogućih posljedica (uključujući trošak i rizik). Stablo odlučivanja se priprema da bi se olakšalo donošenje odluka ili ocjena neke situacije.",
+      "5": "Stablo odlučivanja je slijed po kojem se na brainstorming sastancima donose odluke."
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Što je Expected Monetary Value?",
+    "odgovori": {
+      "1": "Expected Monetary Value (EMV) je očekivani iznos kojim se nagrađuje uspješni voditelj projekta.",
+      "2": "Expected Monetary Value (EMV) je statistički izračun prosječnog troška ovisno o vjerojatnosti da se predviđeni scenarij dogodi u budućnosti.",
+      "3": "Expected Monetary Value (EMV) je postupak izračunavanja očekivane efikasnosti vođenja projekta.",
+      "4": "Expected Monetary Value (EMV) je grafički prikaz u kojem se dnevno prikazuje očekivana potreba za resursima iskazano u novčanim iznosima.",
+      "5": "Expected Monetary Value (EMV) je statistički izračun utrošenih sredstava ovisno o vjerojatnosti da se ostvari usvojeni projektni plan."
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Kada se najčešće koristi ekspertna procjena?",
+    "odgovori": {
+      "1": "Ekspertna procjena se najčešće koristi umjesto ili kao dodatak matematičkim i statističkim tehnikama procjene rizika.",
+      "2": "Ekspertna procjena se najčešće koristi za balansiranje potreba za resursima na kompleksnim projektima.",
+      "3": "Ekspertna procjena se najčešće koristi za motiviranje projektnog tima.",
+      "4": "Ekspertna procjena se najčešće koristi kao osnova za određivanje i procjenu rizika.",
+      "5": "Ekspertna procjena se najčešće koristi kao konzultantska usluga voditelju projekta."
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Što je plan odgovora na rizik?",
+    "odgovori": {
+      "1": "Plan odgovora na rizik (Risk Response) je lista telefonskih brojeva koje treba pozvati kad se na projektu dogode nepredviđene okolnosti.",
+      "2": "Plan odgovora na rizik (Risk Response) je dio planskog dokumenta projekta u kojem se popisuju mogući rizici i navode odgovorne osobe.",
+      "3": "Plan odgovora na rizik (Risk Response) je proces razvoja opcija i određivanja aktivnosti za unapređenje prilika i smanjenje prijetnji za ostvarenje dosega projekta.",
+      "4": "Plan odgovora na rizik (Risk Response) je grafički prikaz utjecaja rizika na projekt.",
+      "5": "Plan odgovora na rizik (Risk Response) je matematska metoda određivanja aktivnosti za unapređenje prilika i smanjenje prijetnji za ostvarenje dosega projekta."
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Prema izvoru (vlasništvu) imovina poduzeća dijeli se na:",
+    "odgovori": {
+      "1": "Novac i zgrade",
+      "2": "Novac, ljudski kapital i strojeve",
+      "3": "Kapital i potraživanja",
+      "4": "Kapital i obveze",
+      "5": "Materijalna i nematerijalna imovina"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Prema vremenu u kojem će se pretvoriti u novčani oblik imovina poduzeća se opisuje kao:",
+    "odgovori": {
+      "1": "Brza i spora",
+      "2": "Financijska i nefinancijska",
+      "3": "Kratkotrajna (obrtna) i dugotrajna (stalna)",
+      "4": "Obrtnička i dugoročna",
+      "5": "Kratkoročna i dugoročna"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Bilanca poduzeća je financijski izvještaj koji pokazuje:",
+    "odgovori": {
+      "1": "Profitabilnost poduzeća",
+      "2": "Koliko i kakve imovine ima poduzeće u određenom razdoblju i koji su izvori financiranja te imovine",
+      "3": "Koliko i kakve imovine ima poduzeće u određenom trenutku (aktiva) i koji su izvori financiranja te imovine (pasiva)",
+      "4": "Udjele pojedinih vlasnika",
+      "5": "Cijenu dionica"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Trošak amortizacije obračunava se:",
+    "odgovori": {
+      "1": "Odjednom, prilikom nabave stalne imovine",
+      "2": "Kako bi se smanjila vrijednost stalne imovine poduzeća",
+      "3": "Prema godišnjoj stopi za imovinu koja ima ograničen vijek uporabe i služi u svrhe poslovanja",
+      "4": "Temeljem rezultata poslovanja poduzeća",
+      "5": "Na kraju vijeka uporabe stalne imovine"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "„Trošak radne snage“ je pojam koji označava:",
+    "odgovori": {
+      "1": "Ukupan trošak koji poduzeće ima za zaposlenika, a sastoji se od plaće i ostalih isplata zaposleniku",
+      "2": "Cijena sata koji poduzeće naplaćuje za svoje usluge",
+      "3": "Vrijednost menadžerskog ugovora",
+      "4": "Ukupan trošak koji poduzeće ima za zaposlenika, a sastoji se od netto plaće, poreza, prireza i doprinosa",
+      "5": "Ukupan trošak koji poduzeće ima za zaposlenika, a sastoji se od plaće i davanja državi"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Račun dobiti i gubitka je financijski izvještaj koji pokazuje:",
+    "odgovori": {
+      "1": "Koliko je prihoda i rashoda ostvareno u određenom trenutku i kolika je njihova razlika - likvidnost",
+      "2": "Koliko je prihoda i rashoda ostvareno u određenom vremenskom razdoblju i kolika je njihova razlika - profitabilnost",
+      "3": "Kolika je zaduženost poduzeća",
+      "4": "Iznos imovine poduzeća",
+      "5": "Što treba naplatiti"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Izvještaj o novčanim tokovima je financijski izvještaj koji pokazuje:",
+    "odgovori": {
+      "1": "Koliko novaca poduzeće ima na računu",
+      "2": "Sposobnost poduzeća za ostvarivanje profita",
+      "3": "Izvore pribavljanja i način uporabe novca",
+      "4": "Sposobnost poduzeća za ulaganja",
+      "5": "Odnos vlastitih sredstava poduzeća i vanjskih ulaganja"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Točka pokrića se koristi za određivanje:",
+    "odgovori": {
+      "1": "Fiksnih troškova proizvodnje",
+      "2": "Dobiti poduzeća u promatranom razdoblju",
+      "3": "Minimalno prihvatljivog opsega poslovanja i minimalno prihvatljive jedinične prodajne cijene proizvoda/usluge",
+      "4": "Odnosa stalnih i promjenjivih troškova",
+      "5": "Maksimalnog opsega proizvodnje poduzeća uz najniže cijene proizvoda"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Odredite točku pokrića (broj prodanih proizvoda) poduzeća uz sljedeće podatke - fiksni godišnji troškovi 60.000Kn, jedinična prodajna cijena 20Kn, jedinični varijabilni troškovi 10Kn:",
+    "odgovori": {
+      "1": "10.000",
+      "2": "12.000",
+      "3": "3.000",
+      "4": "6.000",
+      "5": "4.000"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Svrha rada inženjera u poslovnom projektu je :",
+    "odgovori": {
+      "1": "Skratiti rokove",
+      "2": "Smanjiti cijene",
+      "3": "Koristiti tehnologiju",
+      "4": "Koristeći znanja, vještine i tehnologiju proizvod/uslugu razviti i proizvesti s manjim troškovima, u kraćem vremenu i za kupca kvalitetnije u odnosu na konkurenciju",
+      "5": "Usrećiti kupca"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Inženjerske aktivnosti u pripremi proizvoda za tržište obuhvaćaju :",
+    "odgovori": {
+      "1": "Razvoj i prodaju",
+      "2": "Razvoj, marketing i prodaju",
+      "3": "Istraživanje, razvoj, ispitivanje i licenciranje, proizvodnju, potporu kupcima",
+      "4": "Istraživanje, marketing i prodaju",
+      "5": "Istraživanje i ispitivanje"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Generička struktura poslovnog plana sadrži opise:",
+    "odgovori": {
+      "1": "Tržišta i konkurencije",
+      "2": "Poslovnog modela",
+      "3": "Projektnog tima, posla, općeg konteksta i rizika, te osnovnih financijskih elemenata",
+      "4": "Pravnog okruženja",
+      "5": "Sastava tima"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Analiza tržišta odgovara na pitanja:",
+    "odgovori": {
+      "1": "Kako distribuirati proizvod?",
+      "2": "Kako naplatiti usluge?",
+      "3": "Kome se obratiti za pomoć?",
+      "4": "Ima li dovoljno sirovina?",
+      "5": "Koliko je tržište veliko, koliko može rasti i koliki se udio može ostvariti?"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Analiza poslovnog modela obuhvaća:",
+    "odgovori": {
+      "1": "Analizu bilance poduzeća",
+      "2": "Provjeru likvidnosti dobavljača",
+      "3": "Prikupljanje podataka o uvoznicima",
+      "4": "Ekonomičnost posla, konkurentnost, prostor za pogreške, novčani tok",
+      "5": "Analizu izvještaja o novčanom toku"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Analiza kupaca odgovora na pitanja:",
+    "odgovori": {
+      "1": "Tko ima najveće profite",
+      "2": "Tko su kupci, koliko ih ima, koliko su voljni platiti i kako ih privući i zadržati?",
+      "3": "Kako naplaćivati proizvod",
+      "4": "Ima li prostora za strateška partnerstva",
+      "5": "Gdje smjestiti poduzeće"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Analiza konkurencije odgovara na pitanja:",
+    "odgovori": {
+      "1": "Tko su glavni kupci, koliko ih ima, kako posluju, hoće li broj rasti?",
+      "2": "Tko su kupci, koliko ih ima, koliko su voljni platiti i kako ih privući i zadržati?",
+      "3": "Tko su glavni konkurentni, koje tržišne udjele imaju, kako posluju, hoće li konkurencija rasti?",
+      "4": "Ekonomičnost posla, konkurentnost, prostor za pogreške, novčani tok",
+      "5": "Kako naći investitora"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "SWOT analiza je :",
+    "odgovori": {
+      "1": "Matrični prikaz rješavanja inženjerskog problema",
+      "2": "Matrični prikaz novčanih kretanja konkurencije",
+      "3": "Analiza kretanja cijena dionica",
+      "4": "Analiza kretanja novca",
+      "5": "Alat kojim se analiziraju snage, slabosti, prednosti i nedostaci određenog poduzeća ili pristupa rješavanju problema"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Oligopol je stanje tržišta:",
+    "odgovori": {
+      "1": "Na kojem nema konkurencije",
+      "2": "U kojem vlada savršena konkurentnost",
+      "3": "U kojem postoje samo mala poduzeća",
+      "4": "Na kojem postoji više od 2 značajna konkurenta",
+      "5": "U kojem postoje samo državna poduzeća"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Državna tijela za regulaciju tržišne utakmice:",
+    "odgovori": {
+      "1": "Kontroliraju mala i srednja poduzeća",
+      "2": "Kontroliraju velika poduzeća",
+      "3": "Stvaraju dva jaka konkurenta",
+      "4": "Onemogućuju monopoliste da povećavaju cijene proizvoda i usluga",
+      "5": "Onemogućuju slobodno formiranje cijena"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Monopolistička konkurencija :",
+    "odgovori": {
+      "1": "Poseban oblik tržišne strukture u kojoj jake kompanije diferenciraju svoje vlastite proizvode, koji prividno konkuriraju jedan drugome",
+      "2": "Rezultat rada regulatornih tijela",
+      "3": "Stvarana konkurencija dviju velikih kompanija",
+      "4": "Način smanjenja troškova poslovanja",
+      "5": "Oblik strateškog partnerstva"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Što je „prozor prilike“ (window of opportunity) :",
+    "odgovori": {
+      "1": "Vremenski otvor unutar kojega nema konkurencije",
+      "2": "Vremenski otvor unutar kojega rastu troškovi poslovanja",
+      "3": "Vremenski otvor unutar kojega padaju troškovi poslovanja",
+      "4": "Vremenski otvor unutar kojega raste potražnja za proizvodom/uslugom",
+      "5": "Faza zasićenja tržišta nekom robom ili uslugom"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Faze životnog vijeka proizvoda / industrije su :",
+    "odgovori": {
+      "1": "Nastanak, rast, zasićenje, zrelost, pad",
+      "2": "Brzi porast, sporiji rast, zasićenje",
+      "3": "Otvaranje i zatvaranje prozora prilike",
+      "4": "Ulazak i izlazak s tržišta",
+      "5": "Kupnja i prodaja"
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Svjetska trgovinska organizacija reguliše pitanja vezana uz trgovinu robom (npr. poljoprivrednim proizvodima, tekstilom, odjećom) :",
+    "odgovori": {
+      "1": "regulira pitanja vezana uz trgovinu uslugama, a tiču se npr. zračnog prijevoza, telekomunikacija, kretanja fizičkih osoba koje pružaju usluge",
+      "2": "regulira pitanja vezana uz trgovinu koja se tiču zaštite intelektualnog vlasništva",
+      "3": "objavljuje revizije trgovinskih politika",
+      "4": "rješava sporove između članica",
+      "5": "sve navedeno"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Intelektualno vlasništvo obuhvaća:",
+    "odgovori": {
+      "1": "sve intelektualne vrijednosti pojedinca i društva, a reguliraju ga posebne odredbe imovinsko-pravnih odnosa između pojedinaca i društva. Inteligentne osobe stoga su imućnije jer imaju više intelektualnog vlasništva",
+      "2": "obuhvaća industrijsko vlasništvo (patente, žigove, topografije, industrijski dizajn, oznake zemljopisnog podrijetla, oznaku izvornosti, topografiju poluvodičkih proizvoda) i autorska i srodna prava",
+      "3": "obuhvaća industrijsko (državno) vlasništvo i privatno vlasništvo intelektualaca",
+      "4": "uključuje patente, žigove, topografije, industrijski dizajn, oznake zemljopisnog podrijetla, oznaku izvornosti, topografiju poluvodičkih proizvoda i autorska i druga prava",
+      "5": "none of the above"
+    },
+    "tocan_odgovor": 4
+  },
+  {
+    "pitanje": "Industrijsko vlasništvo obuhvaća:",
+    "odgovori": {
+      "1": "cjelokupno vlasništvo neke industrije u državi i mjera je bruto domaćeg proizvoda",
+      "2": "je dugotrajna imovina nekog dioničkog društva koje se bavi industrijom i navodi se u financijskim izvještajima sa stopom amortizacije od 10% na godinu",
+      "3": "je oblik intelektualnog vlasništva, a uključuje patente, žigove, topografije, industrijski dizajn, oznake zemljopisnog podrijetla, oznaku izvornosti, topografiju poluvodičkih proizvoda",
+      "4": "obuhvaća industrijsko (državno) vlasništvo i privatno vlasništvo intelektualaca",
+      "5": "none of the above"
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Što je patent?",
+    "odgovori": {
+      "1": "predmet koji je nastao kao rezultat intelektualnog rada, (npr. patentni zatvarač)",
+      "2": "je proizvod nastao kao rezultat inovacije, a sva njegova svojstva navode se u oznaci zemljopisnog podrijetla koja je ovjerena žigom",
+      "3": "pravo isključivog raspolaganja na neki izum koje traje 70 godina nakon smrti autora",
+      "4": "pravo umnožavanja izuma koje se dodjeljuje na rok od 20 godina, tj. 10 godina za konsenzalni patent",
+      "5": "pravo isključivog raspolaganja na neki izum koje obično traje 20 godina"
+    },
+    "tocan_odgovor": 5
+  },
+  {
+    "pitanje": "Žig je:",
+    "odgovori": {
+      "1": "Žig ili pečat je, uz potpis inovatora, temelj vjerodostojnosti njegova izuma",
+      "2": "Oblik zaštite razlikovnih znakova koji se mogu grafički prikazati (npr. ime, logotip, amblem, etiketa), a prikladni su za razlikovanje proizvoda ili usluga jednoga poduzetnika od proizvoda ili usluga drugoga poduzetnika.",
+      "3": "Žig je dokaz geografskog podrijetla koji se stječe slanjem preporučene pošiljke s povratnicom (poštanski žig)",
+      "4": "dokaz određenog svojstva, a na deklaraciji se može staviti vodeni ili zeleni žig.",
+      "5": "none of the above"
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Što je industrijski dizajn?",
+    "odgovori": {
+      "1": "Industrijski dizajn je oblikovanje industrijskih zona urbanističkim planovima koje na temelju javnog natječaja donosi svjetsko udruženje arhitekata (World ArchiTecture Organisation – WTO).",
+      "2": "Oblik autorskog prava kojim se vlasnicima industrijskih postrojenja dozvoljava upravljanje procesima, ovisno o rezultatima studije utjecaja na okoliš u skladu s pravilima EU.",
+      "3": "Industrijski dizajn je pravo industrijskog vlasništva koje se stječe na temelju registracije, a štiti prostorna ili plošna obilježja proizvoda vidljiva pri uporabi.",
+      "4": "Industrijski dizajn je oblik strateškog planiranja kojim se na razini države smanjuju rizici globalizacije tako da se biraju (dizajniraju) strateške industrije neke zemlje. Hrvatski industrijski dizajn uključuje brodogradnju i turizam."
+    },
+    "tocan_odgovor": 3
+  },
+  {
+    "pitanje": "Što je topografija poluvodičkih proizvoda?",
+    "odgovori": {
+      "1": "Topografija poluvodičkih proizvoda oblik je intelektualnog vlasništva koji štiti trodimenzionalni raspored slojeva vodljivog, izolacijskog i poluvodičkog materijala u poluvodičkim proizvodima.",
+      "2": "Topografija poluvodičkih proizvoda je oblik vojne strategije za smanjivanje rizika, nastale intelektualnim naporima pa se štiti kao oblik intelektualnog vlasništva, a sastoji se od dodjele različitih puteva (ruta, topografija) za polovicu vodova.",
+      "3": "Topografija poluvodičkih proizvoda je raspored vodiča, poluvodiča i izolatora koji se koristi u poluvodičima, koja je slobodno dostupna je u bazi podataka Svjetske organizacije za intelektualno vlasništvo (WIPO/OMPI) kako bi se potaknula industrija poluvodiča u državama trećeg svijeta i ojačala njihova uloga u Svjetskoj trgovinskoj organizaciji (WTO).",
+      "4": "Topografija poluvodičkih proizvoda je prikaz poluvodiča koji se koristi za zaštitu high-tech proizvoda od strujnog udara. Rezultat je intelektualnog i rada u industriji, pa se zato smatra industrijskim intelektualnim vlasništvom."
+    },
+    "tocan_odgovor": 1
+  },
+  {
+    "pitanje": "Što je oznaka izvornosti?",
+    "odgovori": {
+      "1": "Oznaka izvornosti je žig koji se stavlja na topografiju poluvodičkih proizvoda da bi se mogao registrirati kao intelektualno vlasništvo.",
+      "2": "Oznaka izvornosti oblik je naziv ili znak koji ukazuje da neki proizvod ili usluga potječe iz određenog zemljopisnog područja, te da ima posebna svojstva koja bitno ovise o prirodnim karakteristikama mjesta proizvodnje ili načina prerade.",
+      "3": "Oznaka na topografiji poluvodičkih proizvoda koja pokazuje izvor ideje i štiti ideju kao autorsko pravo.",
+      "4": "Kriterij prema kojem se pretražuju baze podataka, ovisno o mjestu nastanka patenta, kako bi se najbrže našli patenti koji se bez naknade mogu koristiti u industrijskoj proizvodnji (tj. oni patenti nastali na mjestu gdje će se i proizvoditi)."
+    },
+    "tocan_odgovor": 2
+  },
+  {
+    "pitanje": "Autorska prava",
+    "odgovori": {
+      "1": "su materijalna, moralna i druga prava autora na raspolaganje idejama, medijskim informacijama, i znanstvenim otkrićima.",
+      "2": "su materijalna, moralna i druga prava autora na.",
+      "3": "su materijalna, moralna i druga prava autora koja se stječu nakon registracijskog postupka, a traju 20 godina nakon smrti autora (10 godina za konsenzulna prava, tj. kad ima dva ili više autora).",
+      "4": "su isključiva prava autora na raspolaganje autorskim djelom (npr. raspolaganje književnim, glazbenim, scenskim i sličnim djelima) koja uključuju pravo reproduciranja, pravo stavljanja u promet i iznajmljivanja, pravo priopćavanja javnosti i pravo prerade."
+    },
+    "tocan_odgovor": 4
+  }
+]
+
+
+    let currentQuestion = 0;
+    let selectedAnswer = null;
+
+    function showQuestion() {
+      const q = pitanja[currentQuestion];
+      document.getElementById('question').innerText = q.pitanje;
+      const optionsDiv = document.getElementById('options');
+      optionsDiv.innerHTML = '';
+
+      for (let key in q.odgovori) {
+        const option = document.createElement('div');
+        option.innerHTML = `
+          <label>
+            <input type="radio" name="odgovor" value="${key}">
+            ${q.odgovori[key]}
+          </label>
+        `;
+        optionsDiv.appendChild(option);
+      }
+
+      document.getElementById('feedback').innerText = '';
+      document.getElementById('nextBtn').style.display = '';
+    }
+
+    function submitAnswer() {
+      const radios = document.getElementsByName('odgovor');
+      selectedAnswer = null;
+
+      for (let radio of radios) {
+        if (radio.checked) {
+          selectedAnswer = parseInt(radio.value);
+          break;
+        }
+      }
+
+      if (selectedAnswer === null) {
+        alert('Molimo odaberite odgovor.');
+        return;
+      }
+
+      const isCorrect = selectedAnswer === pitanja[currentQuestion].tocan_odgovor;
+      const feedback = document.getElementById('feedback');
+      feedback.style.color = isCorrect ? 'green' : 'red';
+      feedback.innerText = isCorrect ? 'Točno!' : `Netočno. Točan odgovor je: ${pitanja[currentQuestion].odgovori[pitanja[currentQuestion].tocan_odgovor]}`;
+      document.getElementById('nextBtn').style.display = 'inline-block';
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < pitanja.length) {
+        showQuestion();
+      } else {
+        document.getElementById('quiz-container').innerHTML = '<h2>Završili ste kviz!</h2>';
+      }
+    }
+
+    showQuestion();
+  </script>
+
+</body>
+</html>
